@@ -141,7 +141,9 @@ export class Bonuses extends Phaser.GameObjects.Image {
         break;
       }
       case 'explosiveBall': {
-        this.mainScene.explosiveBalls.push(new ExplosiveBall(this.mainScene, this.x, this.y));
+        this.mainScene.explosiveBalls.push(
+          new ExplosiveBall(this.mainScene, this.x, this.mainScene.paddleLayout.y),
+        );
         break;
       }
     }

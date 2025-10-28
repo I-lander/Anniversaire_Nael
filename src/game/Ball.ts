@@ -106,8 +106,10 @@ export class Ball extends Phaser.GameObjects.Graphics {
 
         if (overlapX < overlapY) {
           this.velocity.x *= -1;
+          this.x += Math.sign(this.velocity.x) * (this.ballRadius / 2);
         } else {
           this.velocity.y *= -1;
+          this.y += Math.sign(this.velocity.y) * (this.ballRadius / 2);
         }
 
         this.ballBounce();
