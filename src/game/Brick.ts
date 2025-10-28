@@ -16,6 +16,8 @@ export class Brick extends Phaser.GameObjects.Graphics {
   height: number;
   tween!: Phaser.Tweens.Tween;
   isHitTweening: boolean = false;
+  row: number;
+  column: number;
 
   constructor(
     mainScene: MainScene,
@@ -24,19 +26,23 @@ export class Brick extends Phaser.GameObjects.Graphics {
     width: number,
     height: number,
     life: number,
+    row: number,
+    column: number
   ) {
     super(mainScene, { x, y });
     this.mainScene = mainScene;
     this.width = width;
     this.height = height;
     this.life = life;
+    this.row = row;
+    this.column = column;
     this.fillStyle(bricksLevelColors[this.life - 1], 1);
     this.fillRect(0, 0, width, height);
 
     mainScene.add.existing(this);
   }
 
-  onHit() {
+  onHit(strength: number = 1) {
     if (this.tween && this.tween.isPlaying()) {
       return;
     }
@@ -48,7 +54,7 @@ export class Brick extends Phaser.GameObjects.Graphics {
       ease: 'Power1',
     });
 
-    this.life -= 1;
+    this.life -= strength;
 
     this.mainScene.sound.play('break');
 

@@ -159,7 +159,7 @@ export class Ball extends Phaser.GameObjects.Graphics {
       speed: { min: 1 * this.ballSpeed, max: (1 * this.ballSpeed) / 5 },
       scale: { start: 1, end: 0 },
       alpha: { start: 1, end: 0 },
-      gravityY: 300,
+      gravityY: (300 * this.mainScene.baseUnit) / 32,
       tint: [
         Phaser.Display.Color.HSLToColor(0.1, 0.85, 0.65).color,
         Phaser.Display.Color.HSLToColor(0.2, 0.85, 0.65).color,

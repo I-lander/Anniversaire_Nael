@@ -15,6 +15,7 @@ export class LoadingScene extends Phaser.Scene {
     this.load.image('multiBall', './assets/images/multiBall.png');
     this.load.image('slowBall', './assets/images/slowBall.png');
     this.load.image('fastBall', './assets/images/fastBall.png');
+    this.load.image('explosiveBall', './assets/images/explosiveBall.png');
 
     this.load.audio('click', './assets/audio/click.m4a');
     this.load.audio('bounce', './assets/audio/bounce.m4a');

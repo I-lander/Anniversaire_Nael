@@ -1,4 +1,5 @@
 import { Ball } from './Ball';
+import { ExplosiveBall } from './ExplosiveBall';
 import { MainScene } from './scenes/MainScene';
 
 export class Bonuses extends Phaser.GameObjects.Image {
@@ -13,6 +14,7 @@ export class Bonuses extends Phaser.GameObjects.Image {
     'multiBall',
     'slowBall',
     'fastBall',
+    'explosiveBall',
   ];
   bonusType: string;
   isActive: boolean = true;
@@ -136,6 +138,10 @@ export class Bonuses extends Phaser.GameObjects.Image {
             ball.ballSpeed = ball.baseSpeed * 2;
           }
         });
+        break;
+      }
+      case 'explosiveBall': {
+        this.mainScene.explosiveBalls.push(new ExplosiveBall(this.mainScene, this.x, this.y));
         break;
       }
     }

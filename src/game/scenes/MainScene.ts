@@ -2,7 +2,7 @@ import { Ball } from '../Ball';
 import { BricksPattern, bricksPattern } from '../bircksPattern';
 import { Bonuses } from '../Bonuses';
 import { Brick } from '../Brick';
-import { ExplosiveBalls } from '../ExplosiveBall';
+import { ExplosiveBall } from '../ExplosiveBall';
 import { LoseScreen } from '../LoseScreen';
 
 export class MainScene extends Phaser.Scene {
@@ -16,7 +16,7 @@ export class MainScene extends Phaser.Scene {
   baseUnit!: number;
   balls: Ball[] = [];
   bonuses: Bonuses[] = [];
-  explosiveBalls: ExplosiveBalls[] = [];
+  explosiveBalls: ExplosiveBall[] = [];
 
   offsetY: number = 3;
 
@@ -141,13 +141,17 @@ export class MainScene extends Phaser.Scene {
       this.lifesImages[this.lifesImages.length - 1].destroy();
       this.lifesImages.pop();
 
-      if (this.lifesImages.length <= 0) {
+      if (this.lifesImages.length <= 0 && !this.isGameEnded) {
         this.isGameEnded = true;
         this.loseContainer = new LoseScreen(this);
       } else {
         this.balls.push(
           new Ball(this, this.cameras.main.centerX, this.cameras.main.centerY + this.baseUnit * 2),
         );
+        this.bonuses.forEach((b) => b.destroy());
+        this.explosiveBalls.forEach((b) => b.destroy());
+        this.bonuses = [];
+        this.explosiveBalls = [];
         this.isGameStarted = false;
         this.sound.play('click', { volume: 3 });
       }
@@ -169,6 +173,10 @@ export class MainScene extends Phaser.Scene {
     }
     for (let i = 0; i < this.bonuses.length; i++) {
       this.bonuses[i].update(delta);
+    }
+
+    for (let i = 0; i < this.explosiveBalls.length; i++) {
+      this.explosiveBalls[i].update(delta);
     }
 
     if (this.isLogging) {
@@ -215,7 +223,7 @@ export class MainScene extends Phaser.Scene {
     const totalMarginX = (levelPattern.pattern[0].length - 1) * margin;
 
     const brickWidth = (this.scale.width - totalMarginX) / levelPattern.pattern[0].length;
-    const brickHeight = this.baseUnit;
+    const brickHeight = brickWidth / 2;
 
     const offsetX =
       (this.scale.width - (brickWidth * levelPattern.pattern[0].length + totalMarginX)) / 2;
@@ -228,7 +236,7 @@ export class MainScene extends Phaser.Scene {
         const x = offsetX + col * (brickWidth + margin);
         const y = offsetY + row * (brickHeight + margin);
 
-        const brick = new Brick(this, x, y, brickWidth, brickHeight, level);
+        const brick = new Brick(this, x, y, brickWidth, brickHeight, level, row, col);
         this.bricks.push(brick);
       }
     }
