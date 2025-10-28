@@ -6,7 +6,6 @@ const { log } = require('console');
 const packageJsonPath = path.join(__dirname, 'package.json');
 const packageLockJsonPath = path.join(__dirname, 'package-lock.json');
 const electronPackageJsonPath = path.join(__dirname, 'electron', 'package.json');
-const buildGradlePath = path.join(__dirname, 'android', 'app', 'build.gradle');
 
 function readJsonFile(filePath) {
   return JSON.parse(fs.readFileSync(filePath));
@@ -56,25 +55,6 @@ if (fs.existsSync(electronPackageJsonPath)) {
   writeJsonFile(electronPackageJsonPath, electronPackageJson);
 }
 
-let buildGradleContent = fs.readFileSync(buildGradlePath, 'utf8');
-buildGradleContent = buildGradleContent.replace(
-  /versionName\s"(.+?)"/,
-  `versionName "${packageJson.version}"`,
-);
-fs.writeFileSync(buildGradlePath, buildGradleContent);
-
-const versionTagPath = path.join(__dirname, 'src', 'game', 'utils', 'versionTag.ts');
-const versionTagContent = fs.readFileSync(versionTagPath, 'utf8');
-const content = versionTagContent.replace(
-  /export const APP_VERSION = '(.+?)';/,
-  `export const APP_VERSION = '${packageJson.version}';`,
-);
-fs.writeFileSync(versionTagPath, content);
-
-console.log(
-  `Version is now ${packageJson.version} in package.json, package-lock.json, electron/package.json and build.gradle`,
-);
-
 function runCommand(command) {
   return new Promise((resolve, reject) => {
     exec(command, (error, stdout, stderr) => {
@@ -94,7 +74,7 @@ function runCommand(command) {
 async function gitPushAll(message) {
   try {
     await runCommand(
-      'git add ./package.json ./package-lock.json ./electron/package.json ./android/app/build.gradle ./src/game/utils/versionTag.ts',
+      'git add ./package.json ./package-lock.json',
     );
 
     await runCommand(`git commit -m "${message}"`);
