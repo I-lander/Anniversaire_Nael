@@ -17,6 +17,7 @@ export class MainScene extends Phaser.Scene {
   balls: Ball[] = [];
   bonuses: Bonuses[] = [];
   explosiveBalls: ExplosiveBall[] = [];
+  particleEmitter!: Phaser.GameObjects.Particles.ParticleEmitter | undefined;
 
   offsetY: number = 3;
 
@@ -48,6 +49,8 @@ export class MainScene extends Phaser.Scene {
     });
 
     this.baseUnit = this.scale.width / this.brickColumns / 2;
+    this.createParticleEmitter();
+
     this.paddleLayout = {
       x: 0,
       y: this.cameras.main.height - this.baseUnit / 2 - this.baseUnit,
@@ -179,6 +182,19 @@ export class MainScene extends Phaser.Scene {
       this.explosiveBalls[i].update(delta);
     }
 
+    if (this.bricks.every((brick) => !brick.isActive) && !this.isGameEnded) {
+      this.isGameEnded = true;
+      this.sound.play('win');
+      for (let i = 0; i < 500; i++) {
+        const randomDelay = Phaser.Math.Between(0, 3000);
+        this.time.delayedCall(randomDelay, () => {
+          const randomX = Phaser.Math.Between(0, this.scale.width);
+          const randomY = Phaser.Math.Between(0, this.scale.height);
+          this.particleEmitter?.explode(5, randomX, randomY);
+        });
+      }
+    }
+
     if (this.isLogging) {
       console.log(
         'FPS:',
@@ -191,6 +207,38 @@ export class MainScene extends Phaser.Scene {
         this.children.list.length,
       );
     }
+  }
+
+  createParticleEmitter() {
+    const size = this.baseUnit / 4;
+    const graphics = this.make.graphics({ x: 0, y: 0 });
+    graphics.fillStyle(getColors('rgb(255, 255, 255)'), 1);
+    graphics.fillCircle(size, size, size);
+    graphics.generateTexture('winSpark', size * 2, size * 2);
+    graphics.destroy();
+
+    const particles = this.add.particles(0, 0, 'winSpark', {
+      emitting: false,
+      lifespan: 600,
+      speed: { min: 1 * this.baseUnit * 10, max: (1 * this.baseUnit * 10) / 5 },
+      scale: { start: 1, end: 0 },
+      alpha: { start: 1, end: 0 },
+      gravityY: (300 * this.baseUnit) / 32,
+      tint: [
+        Phaser.Display.Color.HSLToColor(0.1, 0.85, 0.65).color,
+        Phaser.Display.Color.HSLToColor(0.2, 0.85, 0.65).color,
+        Phaser.Display.Color.HSLToColor(0.3, 0.85, 0.65).color,
+        Phaser.Display.Color.HSLToColor(0.4, 0.85, 0.65).color,
+        Phaser.Display.Color.HSLToColor(0.5, 0.85, 0.65).color,
+        Phaser.Display.Color.HSLToColor(0.6, 0.85, 0.65).color,
+        Phaser.Display.Color.HSLToColor(0.7, 0.85, 0.65).color,
+        Phaser.Display.Color.HSLToColor(0.8, 0.85, 0.65).color,
+        Phaser.Display.Color.HSLToColor(0.9, 0.85, 0.65).color,
+      ],
+      quantity: 10,
+    });
+
+    this.particleEmitter = particles;
   }
 
   createPaddle(x?: number, y?: number) {

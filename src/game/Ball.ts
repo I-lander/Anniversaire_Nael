@@ -34,19 +34,6 @@ export class Ball extends Phaser.GameObjects.Graphics {
     this.y += this.velocity.y * (delta / 1000) * this.ballSpeed;
 
     this.checkCollisions();
-
-    if (this.mainScene.bricks.every((brick) => !brick.isActive) && !this.mainScene.isGameEnded) {
-      this.mainScene.isGameEnded = true;
-      this.mainScene.sound.play('win');
-      for (let i = 0; i < 500; i++) {
-        const randomDelay = Phaser.Math.Between(0, 3000);
-        this.mainScene.time.delayedCall(randomDelay, () => {
-          const randomX = Phaser.Math.Between(0, this.mainScene.scale.width);
-          const randomY = Phaser.Math.Between(0, this.mainScene.scale.height);
-          this.particleEmitter?.explode(5, randomX, randomY);
-        });
-      }
-    }
   }
 
   checkCollisions() {
