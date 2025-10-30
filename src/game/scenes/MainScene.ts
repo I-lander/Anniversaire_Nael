@@ -70,6 +70,15 @@ export class MainScene extends Phaser.Scene {
       .setDepth(-1)
       .setAlpha(0);
 
+    this.message.postFX.addShadow(
+      this.baseUnit * 0,
+      this.baseUnit * 0.25,
+      0.007 / (this.baseUnit / 32),
+      1,
+      0x000000,
+      32,
+    );
+
     this.sound.play('click', { volume: 3 });
     this.sound.play('music', { loop: true, volume: 0.1 });
 
@@ -267,7 +276,7 @@ export class MainScene extends Phaser.Scene {
     if (!levelPattern) {
       return;
     }
-    const margin = this.baseUnit / 16;
+    const margin = 0;
     const totalMarginX = (levelPattern.pattern[0].length - 1) * margin;
 
     const brickWidth = (this.scale.width - totalMarginX) / levelPattern.pattern[0].length;
