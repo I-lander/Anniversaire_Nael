@@ -125,7 +125,7 @@ export class Bonuses extends Phaser.GameObjects.Image {
       case 'slowBall': {
         this.mainScene.balls.forEach((ball) => {
           ball.ballSpeed *= 0.8;
-          if (ball.ballSpeed < ball.baseSpeed * 0.25) {
+          if (ball.ballSpeed < ball.baseSpeed * 0.33) {
             ball.ballSpeed = ball.baseSpeed * 0.25;
           }
         });
