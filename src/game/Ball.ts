@@ -8,6 +8,7 @@ export class Ball extends Phaser.GameObjects.Graphics {
   particleEmitter!: Phaser.GameObjects.Particles.ParticleEmitter | undefined;
   ballTrailEmitter!: Phaser.GameObjects.Particles.ParticleEmitter | undefined;
   velocity: { x: number; y: number };
+  isBouncing: boolean = false;
 
   constructor(scene: MainScene, x: number, y: number) {
     super(scene);
@@ -44,6 +45,7 @@ export class Ball extends Phaser.GameObjects.Graphics {
     }
     if (this.y <= this.ballRadius) {
       this.velocity.y *= -1;
+      this.y = this.ballRadius;
       this.ballBounce();
       return;
     }
@@ -120,7 +122,11 @@ export class Ball extends Phaser.GameObjects.Graphics {
   }
 
   ballBounce() {
-    this.mainScene.sound.play('ballBounce', { volume: 0.2 });
+    if (!this.isBouncing) {
+      this.mainScene.sound.play('ballBounce', { volume: 0.2 });
+    }
+    this.isBouncing = true;
+
     this.particleEmitter?.explode(10, this.x, this.y);
     this.setScale(2);
     this.mainScene.add.tween({
@@ -130,6 +136,7 @@ export class Ball extends Phaser.GameObjects.Graphics {
       ease: 'Power1',
       onComplete: () => {
         this.setScale(1);
+        this.isBouncing = false;
       },
     });
   }

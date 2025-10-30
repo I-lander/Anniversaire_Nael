@@ -22,6 +22,8 @@ export class LoadingScene extends Phaser.Scene {
     this.load.audio('break', './assets/audio/break.m4a');
     this.load.audio('win', './assets/audio/win.m4a');
     this.load.audio('ballBounce', './assets/audio/ballBounce.m4a');
+    this.load.audio('oups', './assets/audio/oups.m4a'); 
+    this.load.audio('explode', './assets/audio/explode.m4a'); 
     this.load.audio('music', './assets/audio/music.mp3');
 
     document.fonts.load('16px "Josefinsans"').then(() => {});

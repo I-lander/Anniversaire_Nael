@@ -109,6 +109,7 @@ export class ExplosiveBall extends Phaser.GameObjects.Graphics {
 
       if (distance < this.ballRadius) {
         this.isActive = false;
+								this.mainScene.sound.play('explode');
         this.particleEmitter?.explode(30, this.x, this.y);
         const neighbors = this.getNeighbors(brick);
         neighbors.push(brick);

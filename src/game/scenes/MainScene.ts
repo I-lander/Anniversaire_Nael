@@ -36,6 +36,10 @@ export class MainScene extends Phaser.Scene {
   isGameEnded: boolean = false;
 
   isLogging: boolean = false;
+  musicSound!:
+    | Phaser.Sound.NoAudioSound
+    | Phaser.Sound.HTML5AudioSound
+    | Phaser.Sound.WebAudioSound;
 
   constructor() {
     super('MainScene');
@@ -44,6 +48,8 @@ export class MainScene extends Phaser.Scene {
   preload() {}
 
   create() {
+    this.musicSound = this.sound.add('music', { loop: true, volume: 0.05 });
+
     this.time.delayedCall(1000, () => {
       this.scale.refresh();
     });
@@ -80,21 +86,14 @@ export class MainScene extends Phaser.Scene {
     );
 
     this.sound.play('click', { volume: 3 });
-    this.sound.play('music', { loop: true, volume: 0.1 });
+    this.musicSound.play();
 
     this.startScreenContainer = this.add.container(0, 0);
     const overlay = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x000000, 0.5);
     overlay.setOrigin(0);
     this.startScreenContainer.add(overlay);
 
-    const startText = this.add
-      .text(this.cameras.main.centerX, this.cameras.main.centerY, 'Click pour commencer', {
-        fontFamily: 'Josefinsans',
-        fontSize: `${this.baseUnit * 1.2}px`,
-        color: '#ffffff',
-      })
-      .setOrigin(0.5);
-    this.startScreenContainer.add([overlay, startText]).setDepth(5);
+    this.startScreenContainer.add([overlay]).setDepth(5);
 
     for (let i = 0; i < this.lifes; i++) {
       this.addExtraLife();
@@ -112,7 +111,6 @@ export class MainScene extends Phaser.Scene {
       const relativeY = event.clientY - rect.top;
 
       const scaleX = this.scale.width / rect.width;
-      const scaleY = this.scale.height / rect.height;
 
       const pointerX = relativeX * scaleX;
 
@@ -146,7 +144,7 @@ export class MainScene extends Phaser.Scene {
   loseBall(ball: Ball) {
     this.balls = this.balls.filter((b) => b !== ball);
     ball.destroy();
-
+    this.sound.play('oups');
     if (this.balls.length === 0) {
       this.cameras.main.shake(200, 0.01);
       this.cameras.main.flash(100, 255, 0, 0);
@@ -165,7 +163,6 @@ export class MainScene extends Phaser.Scene {
         this.bonuses = [];
         this.explosiveBalls = [];
         this.isGameStarted = false;
-        this.sound.play('click', { volume: 3 });
       }
     }
   }
@@ -335,7 +332,6 @@ export class MainScene extends Phaser.Scene {
     this.paddleLayout.x = this.paddle.x;
 
     this.sound.play('click', { volume: 3 });
-    this.sound.play('music', { loop: true, volume: 0.1 });
 
     this.startScreenContainer = this.add.container(0, 0);
     const overlay = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x000000, 0.5);
