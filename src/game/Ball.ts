@@ -8,7 +8,14 @@ export class Ball extends Phaser.GameObjects.Graphics {
   particleEmitter!: Phaser.GameObjects.Particles.ParticleEmitter | undefined;
   ballTrailEmitter!: Phaser.GameObjects.Particles.ParticleEmitter | undefined;
   velocity: { x: number; y: number };
-  isBouncing: boolean = false;
+  ballBounceSound!:
+    | Phaser.Sound.NoAudioSound
+    | Phaser.Sound.HTML5AudioSound
+    | Phaser.Sound.WebAudioSound;
+  ballPaddleBounceSound!:
+    | Phaser.Sound.NoAudioSound
+    | Phaser.Sound.HTML5AudioSound
+    | Phaser.Sound.WebAudioSound;
 
   constructor(scene: MainScene, x: number, y: number) {
     super(scene);
@@ -22,6 +29,9 @@ export class Ball extends Phaser.GameObjects.Graphics {
     this.createBall();
     this.setPosition(x, y);
     this.createParticleEmitter();
+
+    this.ballBounceSound = this.mainScene.sound.add('ballBounce');
+    this.ballPaddleBounceSound = this.mainScene.sound.add('bounce');
   }
 
   createBall() {
@@ -71,7 +81,9 @@ export class Ball extends Phaser.GameObjects.Graphics {
       this.velocity.y = -Math.cos(bounceAngle);
       this.ballBounce();
       this.mainScene.face.setTexture('smile');
-      this.mainScene.sound.play('bounce');
+      if (!this.ballPaddleBounceSound.isPlaying) {
+        this.ballPaddleBounceSound.play();
+      }
 
       if (!this.mainScene.isPaddleTweening) {
         this.mainScene.isPaddleTweening = true;
@@ -122,10 +134,9 @@ export class Ball extends Phaser.GameObjects.Graphics {
   }
 
   ballBounce() {
-    if (!this.isBouncing) {
-      this.mainScene.sound.play('ballBounce', { volume: 0.2 });
+    if (!this.ballBounceSound.isPlaying) {
+      this.ballBounceSound.play();
     }
-    this.isBouncing = true;
 
     this.particleEmitter?.explode(10, this.x, this.y);
     this.setScale(2);
@@ -136,7 +147,6 @@ export class Ball extends Phaser.GameObjects.Graphics {
       ease: 'Power1',
       onComplete: () => {
         this.setScale(1);
-        this.isBouncing = false;
       },
     });
   }

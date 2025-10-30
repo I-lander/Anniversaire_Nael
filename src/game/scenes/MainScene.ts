@@ -40,6 +40,7 @@ export class MainScene extends Phaser.Scene {
     | Phaser.Sound.NoAudioSound
     | Phaser.Sound.HTML5AudioSound
     | Phaser.Sound.WebAudioSound;
+  oupsSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
 
   constructor() {
     super('MainScene');
@@ -49,6 +50,7 @@ export class MainScene extends Phaser.Scene {
 
   create() {
     this.musicSound = this.sound.add('music', { loop: true, volume: 0.05 });
+    this.oupsSound = this.sound.add('oups', { volume: 5 });
 
     this.time.delayedCall(1000, () => {
       this.scale.refresh();
@@ -144,7 +146,7 @@ export class MainScene extends Phaser.Scene {
   loseBall(ball: Ball) {
     this.balls = this.balls.filter((b) => b !== ball);
     ball.destroy();
-    this.sound.play('oups');
+    this.oupsSound.play();
     if (this.balls.length === 0) {
       this.cameras.main.shake(200, 0.01);
       this.cameras.main.flash(100, 255, 0, 0);
