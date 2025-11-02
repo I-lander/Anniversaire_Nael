@@ -48,8 +48,15 @@ export class Ball extends Phaser.GameObjects.Graphics {
   }
 
   checkCollisions() {
-    if (this.x <= this.ballRadius || this.x >= this.mainScene.scale.width - this.ballRadius) {
+    if (this.x <= this.ballRadius) {
       this.velocity.x *= -1;
+      this.x = this.ballRadius;
+      this.ballBounce();
+      return;
+    }
+    if (this.x >= this.mainScene.scale.width - this.ballRadius) {
+      this.velocity.x *= -1;
+      this.x = this.mainScene.scale.width - this.ballRadius;
       this.ballBounce();
       return;
     }
@@ -61,9 +68,12 @@ export class Ball extends Phaser.GameObjects.Graphics {
     }
     if (this.y >= this.mainScene.scale.height + this.ballRadius) {
       this.mainScene.loseBall(this);
+      return;
     }
     if (
       this.y + this.ballRadius >= this.mainScene.paddleLayout.y &&
+      this.y + this.ballRadius <=
+        this.mainScene.paddleLayout.y + this.mainScene.paddleLayout.height / 2 &&
       this.x + this.ballRadius > this.mainScene.paddleLayout.x &&
       this.x - this.ballRadius <
         this.mainScene.paddleLayout.x + this.mainScene.paddleLayout.width &&

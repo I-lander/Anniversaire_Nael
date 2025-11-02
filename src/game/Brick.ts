@@ -22,6 +22,7 @@ export class Brick extends Phaser.GameObjects.Graphics {
     | Phaser.Sound.NoAudioSound
     | Phaser.Sound.HTML5AudioSound
     | Phaser.Sound.WebAudioSound;
+  margin: number;
 
   constructor(
     mainScene: MainScene,
@@ -40,8 +41,9 @@ export class Brick extends Phaser.GameObjects.Graphics {
     this.life = life;
     this.row = row;
     this.column = column;
+    this.margin = this.mainScene.baseUnit / 10;
     this.fillStyle(bricksLevelColors[this.life - 1], 1);
-    this.fillRect(0, 0, width, height);
+    this.fillRect(this.margin, this.margin, width - this.margin * 2, height - this.margin * 2);
     this.brickSound = this.mainScene.sound.add('break');
 
     mainScene.add.existing(this);
@@ -85,7 +87,7 @@ export class Brick extends Phaser.GameObjects.Graphics {
     } else {
       this.clear();
       this.fillStyle(bricksLevelColors[this.life - 1], 1);
-      this.fillRect(0, 0, this.width, this.height);
+      this.fillRect(this.margin, this.margin, this.width - this.margin * 2, this.height - this.margin * 2);
     }
   }
 }
