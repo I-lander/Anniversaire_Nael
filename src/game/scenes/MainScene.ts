@@ -311,7 +311,6 @@ export class MainScene extends Phaser.Scene {
 
     this.isGameStarted = false;
     this.isGameEnded = false;
-    this.lifes = 1;
 
     this.balls.push(
       new Ball(this, this.cameras.main.centerX, this.cameras.main.centerY + this.baseUnit * 2),
@@ -320,11 +319,7 @@ export class MainScene extends Phaser.Scene {
     this.createBricks();
 
     for (let i = 0; i < this.lifes; i++) {
-      const lifeImg = this.add
-        .image(this.baseUnit / 2 + i * (this.baseUnit + 10), this.baseUnit / 2, 'smile')
-        .setOrigin(0, 0)
-        .setDisplaySize(this.baseUnit, this.baseUnit);
-      this.lifesImages.push(lifeImg);
+      this.addExtraLife();
     }
 
     this.paddle.setPosition(
